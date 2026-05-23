@@ -1,0 +1,492 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+#app{font-family:'Nunito',sans-serif;padding:1.2rem 1rem;min-height:500px;}
+h1.titulo{font-family:'Fredoka One',cursive;font-size:1.9rem;text-align:center;color:#7c3aed;margin-bottom:.2rem;}
+.subtitulo{text-align:center;font-size:.85rem;color:#6b7280;margin-bottom:1rem;}
+
+#pantalla-registro{max-width:420px;margin:0 auto;}
+.reg-card{background:linear-gradient(135deg,#ede9fe,#dbeafe);border-radius:18px;padding:1.5rem;border:2px solid #c4b5fd;display:flex;flex-direction:column;gap:.9rem;}
+.reg-card label{font-size:.85rem;font-weight:700;color:#4c1d95;}
+.reg-card input,.reg-card select{width:100%;padding:.55rem .9rem;border-radius:10px;border:2px solid #c4b5fd;font-size:1rem;font-family:'Nunito',sans-serif;color:#1e1b4b;background:#fff;outline:none;}
+.reg-card input:focus,.reg-card select:focus{border-color:#7c3aed;}
+.btn-start{width:100%;padding:.7rem;border-radius:30px;border:none;background:linear-gradient(90deg,#7c3aed,#2563eb);color:#fff;font-family:'Fredoka One',cursive;font-size:1.15rem;cursor:pointer;letter-spacing:.5px;}
+.btn-start:hover{opacity:.88;}
+.btn-docente{width:100%;padding:.6rem;border-radius:30px;border:2px solid #059669;background:transparent;color:#059669;font-family:'Fredoka One',cursive;font-size:1rem;cursor:pointer;}
+.btn-docente:hover{background:#d1fae5;}
+
+.timer-bar{display:flex;align-items:center;gap:.7rem;margin-bottom:.8rem;}
+.timer-display{font-family:'Fredoka One',cursive;font-size:1.5rem;min-width:60px;text-align:center;padding:.2rem .7rem;border-radius:10px;background:#ede9fe;color:#7c3aed;border:2px solid #c4b5fd;}
+.timer-display.urgente{background:#fee2e2;color:#dc2626;border-color:#fca5a5;animation:pulse .7s infinite;}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
+.timer-track{flex:1;height:10px;background:#e5e7eb;border-radius:10px;overflow:hidden;}
+.timer-fill{height:100%;background:linear-gradient(90deg,#7c3aed,#2563eb);border-radius:10px;transition:width .9s linear;}
+.timer-fill.urgente{background:linear-gradient(90deg,#dc2626,#f97316);}
+
+.layout{display:flex;gap:1.2rem;align-items:flex-start;flex-wrap:wrap;}
+.col-izq{flex:0 0 200px;display:flex;flex-direction:column;align-items:center;gap:.8rem;}
+.col-der{flex:1;min-width:250px;display:flex;flex-direction:column;gap:.8rem;}
+svg#horca{width:170px;height:185px;}
+
+.info-top{display:flex;gap:.6rem;flex-wrap:wrap;}
+.chip{padding:.3rem .8rem;border-radius:20px;font-size:.78rem;font-weight:700;}
+.chip-preg{background:#ede9fe;color:#4c1d95;}
+.chip-pts{background:#d1fae5;color:#065f46;}
+.chip-racha{background:#fef3c7;color:#92400e;}
+
+.pregunta-card{background:linear-gradient(135deg,#ede9fe,#dbeafe);border-radius:14px;padding:.9rem 1.1rem;border:2px solid #c4b5fd;}
+.pregunta-label{font-size:.72rem;font-weight:700;color:#7c3aed;text-transform:uppercase;letter-spacing:1px;margin-bottom:.3rem;}
+.pregunta-text{font-size:1.05rem;font-weight:700;color:#1e1b4b;line-height:1.4;}
+.pista-text{font-size:.8rem;color:#6b7280;font-style:italic;margin-top:.3rem;}
+
+.palabra-display{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;padding:.5rem 0;}
+.letra-box{width:34px;height:40px;border-bottom:3px solid #7c3aed;display:flex;align-items:center;justify-content:center;font-size:1.25rem;font-weight:700;color:#1e1b4b;}
+.letra-box.espacio{border-bottom:none;width:14px;}
+
+.teclado{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;}
+.key{width:34px;height:34px;border-radius:8px;border:2px solid #c4b5fd;background:#f5f3ff;color:#4c1d95;font-size:.9rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:all .13s;}
+.key:hover:not(:disabled){background:#7c3aed;color:#fff;border-color:#7c3aed;transform:scale(1.08);}
+.key:disabled{cursor:not-allowed;opacity:.35;}
+.key.correcta{background:#059669;border-color:#059669;color:#fff;}
+.key.incorrecta{background:#dc2626;border-color:#dc2626;color:#fff;}
+.letras-usadas{font-size:.75rem;color:#9ca3af;text-align:center;min-height:16px;}
+
+.estado-msg{text-align:center;font-family:'Fredoka One',cursive;font-size:1.15rem;padding:.4rem .9rem;border-radius:12px;display:none;}
+.estado-msg.gano{background:#d1fae5;color:#065f46;display:block;}
+.estado-msg.perdio{background:#fee2e2;color:#991b1b;display:block;}
+.estado-msg.tiempo{background:#fef3c7;color:#92400e;display:block;}
+
+.btns-juego{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;}
+.btn-accion{padding:.5rem 1.3rem;border-radius:30px;border:none;color:#fff;font-family:'Fredoka One',cursive;font-size:.95rem;cursor:pointer;}
+.btn-accion:hover{opacity:.88;}
+.btn-sig{background:linear-gradient(90deg,#7c3aed,#2563eb);}
+.btn-terminar{background:linear-gradient(90deg,#059669,#0891b2);}
+
+#pantalla-resultado{max-width:460px;margin:0 auto;}
+.res-card{background:linear-gradient(135deg,#ede9fe,#d1fae5);border-radius:18px;padding:1.4rem;border:2px solid #c4b5fd;display:flex;flex-direction:column;gap:.7rem;}
+.res-titulo{font-family:'Fredoka One',cursive;font-size:1.5rem;text-align:center;color:#7c3aed;}
+.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
+.res-item{background:#fff;border-radius:12px;padding:.6rem .9rem;border:1.5px solid #e9d5ff;text-align:center;}
+.res-val{font-family:'Fredoka One',cursive;font-size:1.5rem;color:#7c3aed;}
+.res-lab{font-size:.7rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.4px;}
+.nota-grande{background:#fff;border-radius:16px;padding:.9rem;text-align:center;border:2px solid #059669;}
+.nota-num{font-family:'Fredoka One',cursive;font-size:3rem;color:#059669;}
+.nota-lab{font-size:.78rem;color:#6b7280;text-transform:uppercase;}
+.guardado-badge{background:#d1fae5;border-radius:10px;padding:.5rem .9rem;font-size:.82rem;color:#065f46;font-weight:700;text-align:center;border:1.5px solid #6ee7b7;}
+.btn-reiniciar{width:100%;padding:.65rem;border-radius:30px;border:none;background:linear-gradient(90deg,#7c3aed,#2563eb);color:#fff;font-family:'Fredoka One',cursive;font-size:1.05rem;cursor:pointer;}
+.btn-reiniciar:hover{opacity:.88;}
+
+/* PANEL DOCENTE */
+#pantalla-docente{max-width:660px;margin:0 auto;}
+.doc-card{background:#fff;border-radius:18px;padding:1.3rem;border:2px solid #059669;display:flex;flex-direction:column;gap:.9rem;}
+.doc-titulo{font-family:'Fredoka One',cursive;font-size:1.4rem;color:#059669;display:flex;align-items:center;gap:.5rem;}
+.tabla-wrap{overflow-x:auto;border-radius:10px;border:1.5px solid #e5e7eb;}
+table{width:100%;border-collapse:collapse;font-size:.8rem;}
+th{background:#059669;color:#fff;padding:.5rem .7rem;text-align:left;font-weight:700;font-size:.75rem;}
+td{padding:.45rem .7rem;border-bottom:1px solid #f3f4f6;color:#1e1b4b;}
+tr:last-child td{border-bottom:none;}
+tr:nth-child(even) td{background:#f9fafb;}
+.nota-badge{padding:.2rem .6rem;border-radius:20px;font-weight:700;font-size:.78rem;}
+.nota-alta{background:#d1fae5;color:#065f46;}
+.nota-media{background:#fef3c7;color:#92400e;}
+.nota-baja{background:#fee2e2;color:#991b1b;}
+.doc-btns{display:flex;gap:.7rem;flex-wrap:wrap;}
+.btn-dl{flex:1;padding:.65rem;border-radius:30px;border:none;background:linear-gradient(90deg,#059669,#0891b2);color:#fff;font-family:'Fredoka One',cursive;font-size:1rem;cursor:pointer;min-width:160px;}
+.btn-dl:hover{opacity:.88;}
+.btn-volver{flex:1;padding:.65rem;border-radius:30px;border:2px solid #7c3aed;background:transparent;color:#7c3aed;font-family:'Fredoka One',cursive;font-size:1rem;cursor:pointer;min-width:120px;}
+.btn-volver:hover{background:#ede9fe;}
+.btn-borrar{flex:1;padding:.65rem;border-radius:30px;border:2px solid #dc2626;background:transparent;color:#dc2626;font-family:'Fredoka One',cursive;font-size:.9rem;cursor:pointer;min-width:120px;}
+.btn-borrar:hover{background:#fee2e2;}
+.empty-msg{text-align:center;color:#9ca3af;padding:1.5rem;font-size:.9rem;}
+.pwd-wrap{display:flex;flex-direction:column;gap:.6rem;}
+.pwd-wrap input{padding:.55rem .9rem;border-radius:10px;border:2px solid #6ee7b7;font-size:1rem;font-family:'Nunito',sans-serif;outline:none;}
+.pwd-wrap input:focus{border-color:#059669;}
+.btn-pwd{padding:.6rem 1.5rem;border-radius:30px;border:none;background:#059669;color:#fff;font-family:'Fredoka One',cursive;font-size:1rem;cursor:pointer;}
+.error-pwd{color:#dc2626;font-size:.82rem;font-weight:700;display:none;}
+</style>
+
+<div id="app">
+  <h1 class="titulo">🔢 El Ahorcado Matemático</h1>
+  <p class="subtitulo">Suma de Polinomios · Grado 8</p>
+
+  <!-- REGISTRO -->
+  <div id="pantalla-registro">
+    <div class="reg-card">
+      <div>
+        <label>👤 Nombre completo</label>
+        <input type="text" id="inp-nombre" placeholder="Ej: Valentina Gómez Torres" />
+      </div>
+      <div>
+        <label>🏫 Grado</label>
+        <select id="inp-grado">
+          <option value="">-- Selecciona tu grado --</option>
+          <option>8°A</option><option>8°B</option><option>8°C</option>
+          <option>8°D</option><option>8°E</option><option>8°F</option><option>Otro</option>
+        </select>
+      </div>
+      <div style="background:#fff;border-radius:10px;padding:.7rem 1rem;border:1.5px solid #c4b5fd;">
+        <p style="font-size:.82rem;color:#4c1d95;font-weight:700;">📋 Instrucciones:</p>
+        <ul style="font-size:.8rem;color:#6b7280;padding-left:1rem;margin-top:.3rem;line-height:1.8;">
+          <li>Tienes <strong>2 minutos</strong> para responder las preguntas.</li>
+          <li>Adivina el resultado letra por letra.</li>
+          <li>Máximo <strong>6 errores</strong> por pregunta.</li>
+          <li>Tu nota queda guardada automáticamente.</li>
+        </ul>
+      </div>
+      <button class="btn-start" onclick="iniciarJuego()">¡Comenzar! 🚀</button>
+      <button class="btn-docente" onclick="mostrarDocente()">🔐 Panel del docente</button>
+    </div>
+  </div>
+
+  <!-- JUEGO -->
+  <div id="pantalla-juego" style="display:none;">
+    <div class="timer-bar">
+      <div class="timer-display" id="timer-display">2:00</div>
+      <div class="timer-track"><div class="timer-fill" id="timer-fill" style="width:100%"></div></div>
+    </div>
+    <div class="layout">
+      <div class="col-izq">
+        <svg id="horca" viewBox="0 0 180 200" xmlns="http://www.w3.org/2000/svg">
+          <line x1="20" y1="190" x2="160" y2="190" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/>
+          <line x1="50" y1="190" x2="50" y2="20" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/>
+          <line x1="50" y1="20" x2="120" y2="20" stroke="#7c3aed" stroke-width="4" stroke-linecap="round"/>
+          <line x1="120" y1="20" x2="120" y2="45" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+          <circle id="h-cabeza" cx="120" cy="58" r="13" stroke="#dc2626" stroke-width="3" fill="none" opacity="0"/>
+          <line id="h-cuerpo" x1="120" y1="71" x2="120" y2="120" stroke="#dc2626" stroke-width="3" stroke-linecap="round" opacity="0"/>
+          <line id="h-brazo-i" x1="120" y1="85" x2="97" y2="108" stroke="#dc2626" stroke-width="3" stroke-linecap="round" opacity="0"/>
+          <line id="h-brazo-d" x1="120" y1="85" x2="143" y2="108" stroke="#dc2626" stroke-width="3" stroke-linecap="round" opacity="0"/>
+          <line id="h-pierna-i" x1="120" y1="120" x2="100" y2="148" stroke="#dc2626" stroke-width="3" stroke-linecap="round" opacity="0"/>
+          <line id="h-pierna-d" x1="120" y1="120" x2="140" y2="148" stroke="#dc2626" stroke-width="3" stroke-linecap="round" opacity="0"/>
+        </svg>
+        <div id="estado-msg" class="estado-msg"></div>
+        <div class="btns-juego">
+          <button class="btn-accion btn-sig" id="btn-sig" style="display:none;" onclick="siguientePregunta()">Siguiente ▶</button>
+          <button class="btn-accion btn-terminar" onclick="terminarJuego()">Terminar 🏁</button>
+        </div>
+      </div>
+      <div class="col-der">
+        <div class="info-top">
+          <span class="chip chip-preg" id="chip-preg">Pregunta 1/10</span>
+          <span class="chip chip-pts" id="chip-pts">Puntos: 0</span>
+          <span class="chip chip-racha" id="chip-racha">Racha: 0 🔥</span>
+        </div>
+        <div class="pregunta-card">
+          <div class="pregunta-label">¿Cuál es el resultado?</div>
+          <div class="pregunta-text" id="pregunta-text">...</div>
+          <div class="pista-text" id="pista-text"></div>
+        </div>
+        <div class="palabra-display" id="palabra-display"></div>
+        <div class="teclado" id="teclado"></div>
+        <div class="letras-usadas" id="letras-usadas"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTADO ESTUDIANTE -->
+  <div id="pantalla-resultado" style="display:none;">
+    <div class="res-card">
+      <div class="res-titulo">📊 Tu resultado</div>
+      <div style="text-align:center;font-size:.9rem;color:#4c1d95;font-weight:600;" id="res-nombre-label"></div>
+      <div class="nota-grande">
+        <div class="nota-num" id="res-nota">0.0</div>
+        <div class="nota-lab">Nota final (escala 0.0 – 5.0)</div>
+      </div>
+      <div class="res-grid">
+        <div class="res-item"><div class="res-val" id="res-acertadas">0</div><div class="res-lab">Acertadas</div></div>
+        <div class="res-item"><div class="res-val" id="res-total">0</div><div class="res-lab">Total preguntas</div></div>
+        <div class="res-item"><div class="res-val" id="res-puntos">0</div><div class="res-lab">Puntos</div></div>
+        <div class="res-item"><div class="res-val" id="res-tiempo-r">--</div><div class="res-lab">Tiempo usado</div></div>
+      </div>
+      <div class="guardado-badge">✅ Tu nota ha sido guardada en la base de datos del docente</div>
+      <button class="btn-reiniciar" onclick="reiniciar()">↺ Nuevo estudiante</button>
+    </div>
+  </div>
+
+  <!-- PANEL DOCENTE -->
+  <div id="pantalla-docente" style="display:none;">
+    <div class="doc-card">
+      <div class="doc-titulo">🏫 Panel del docente</div>
+      <div id="pwd-area" class="pwd-wrap">
+        <label style="font-size:.85rem;font-weight:700;color:#059669;">Contraseña de acceso</label>
+        <input type="password" id="inp-pwd" placeholder="Ingresa la contraseña..." onkeydown="if(event.key==='Enter')verificarPwd()"/>
+        <div style="font-size:.75rem;color:#6b7280;">Contraseña predeterminada: <strong>docente2025</strong></div>
+        <div id="error-pwd" class="error-pwd">❌ Contraseña incorrecta</div>
+        <button class="btn-pwd" onclick="verificarPwd()">Entrar</button>
+        <button class="btn-volver" onclick="reiniciar()" style="border-color:#6b7280;color:#6b7280;">← Volver</button>
+      </div>
+      <div id="panel-datos" style="display:none;display:flex;flex-direction:column;gap:.8rem;">
+        <div id="resumen-stats" style="display:flex;gap:.6rem;flex-wrap:wrap;"></div>
+        <div class="tabla-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>Nombre</th><th>Grado</th><th>Acertadas</th><th>Total</th><th>Nota</th><th>Tiempo</th><th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-body"></tbody>
+          </table>
+          <div id="tabla-empty" class="empty-msg" style="display:none;">No hay registros aún. Los estudiantes aparecerán aquí al terminar su juego.</div>
+        </div>
+        <div class="doc-btns">
+          <button class="btn-dl" onclick="descargarExcel()">⬇️ Descargar Excel completo</button>
+          <button class="btn-volver" onclick="reiniciar()">← Salir</button>
+          <button class="btn-borrar" onclick="borrarDatos()">🗑 Borrar todos</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const PARTES=['h-cabeza','h-cuerpo','h-brazo-i','h-brazo-d','h-pierna-i','h-pierna-d'];
+const MAX_ERR=6, TIEMPO_MAX=120;
+const ABEC='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+const PWD='docente2025';
+const STORAGE_KEY='ahorcado-bd-resultados';
+
+const DATOS=[
+  {preg:"(3x² + 2x + 1) + (x² + 4x + 5)",resp:"CUATROX MAS SEIS X MAS SEIS",display:"4x² + 6x + 6",pista:"Suma coeficientes del mismo grado"},
+  {preg:"(5x³ + 2x) + (3x³ + x + 7)",resp:"OCHO X MAS TRES X MAS SIETE",display:"8x³ + 3x + 7",pista:"¿Cuántos términos con x³ hay?"},
+  {preg:"(2x² + 3) + (4x² + 5x + 1)",resp:"SEIS X MAS CINCO X MAS CUATRO",display:"6x² + 5x + 4",pista:"Ojo con los términos independientes"},
+  {preg:"(x + 4) + (3x + 2)",resp:"CUATRO X MAS SEIS",display:"4x + 6",pista:"Solo términos lineales e independientes"},
+  {preg:"(7x² + x) + (x² + 3x + 9)",resp:"OCHO X MAS CUATRO X MAS NUEVE",display:"8x² + 4x + 9",pista:"Agrupa los x² primero"},
+  {preg:"(2x³ + 5x²) + (x³ + 3x²)",resp:"TRES X MAS OCHO X",display:"3x³ + 8x²",pista:"Sin términos independientes"},
+  {preg:"(10x + 3) + (2x + 7)",resp:"DOCE X MAS DIEZ",display:"12x + 10",pista:"Suma lineal simple"},
+  {preg:"(3x⁴ + 2x²) + (x⁴ + x²)",resp:"CUATRO X MAS TRES X",display:"4x⁴ + 3x²",pista:"Polinomios de grado 4"},
+  {preg:"(6x + 1) + (4x + 9)",resp:"DIEZ X MAS DIEZ",display:"10x + 10",pista:"¡Ambos resultados son iguales!"},
+  {preg:"(x² + x + 1) + (x² + x + 1)",resp:"DOS X MAS DOS X MAS DOS",display:"2x² + 2x + 2",pista:"El mismo polinomio sumado dos veces"},
+];
+
+function norm(c){return c.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase();}
+function normStr(s){return s.split('').map(norm).join('');}
+
+let E={nombre:'',grado:'',preguntas:[],idx:0,acertadas:0,puntos:0,racha:0,
+       errores:0,acertadasSet:new Set(),timerInt:null,tiempoRestante:TIEMPO_MAX,_respNorm:''};
+
+// --- STORAGE ---
+async function cargarBD(){
+  try{
+    const r=await window.storage.get(STORAGE_KEY,true);
+    return r?JSON.parse(r.value):[];
+  }catch(e){return [];}
+}
+async function guardarRegistro(reg){
+  try{
+    const bd=await cargarBD();
+    bd.push(reg);
+    await window.storage.set(STORAGE_KEY,JSON.stringify(bd),true);
+  }catch(e){console.error(e);}
+}
+async function borrarBD(){
+  try{await window.storage.delete(STORAGE_KEY,true);}catch(e){}
+}
+
+// --- JUEGO ---
+function iniciarJuego(){
+  const n=document.getElementById('inp-nombre').value.trim();
+  const g=document.getElementById('inp-grado').value;
+  if(!n){alert('Por favor escribe tu nombre completo.');return;}
+  if(!g){alert('Por favor selecciona tu grado.');return;}
+  E.nombre=n;E.grado=g;
+  E.preguntas=[...DATOS].sort(()=>Math.random()-.5);
+  E.idx=0;E.acertadas=0;E.puntos=0;E.racha=0;E.tiempoRestante=TIEMPO_MAX;
+  mostrarPantalla('pantalla-juego');
+  iniciarTimer();
+  cargarPregunta();
+}
+
+function iniciarTimer(){
+  clearInterval(E.timerInt);
+  E.timerInt=setInterval(()=>{
+    E.tiempoRestante--;actualizarTimer();
+    if(E.tiempoRestante<=0){clearInterval(E.timerInt);terminarJuego(true);}
+  },1000);
+}
+
+function actualizarTimer(){
+  const r=E.tiempoRestante,m=Math.floor(r/60),s=r%60;
+  document.getElementById('timer-display').textContent=m+':'+(s<10?'0':'')+s;
+  document.getElementById('timer-fill').style.width=((r/TIEMPO_MAX)*100)+'%';
+  const urg=r<=20;
+  document.getElementById('timer-display').classList.toggle('urgente',urg);
+  document.getElementById('timer-fill').classList.toggle('urgente',urg);
+}
+
+function cargarPregunta(){
+  if(E.idx>=E.preguntas.length){terminarJuego();return;}
+  const d=E.preguntas[E.idx];
+  E._respNorm=normStr(d.resp);
+  E.errores=0;E.acertadasSet=new Set();
+  PARTES.forEach(id=>document.getElementById(id).setAttribute('opacity','0'));
+  const msg=document.getElementById('estado-msg');msg.className='estado-msg';msg.textContent='';
+  document.getElementById('btn-sig').style.display='none';
+  document.getElementById('pregunta-text').textContent=d.preg;
+  document.getElementById('pista-text').innerHTML='💡 '+d.pista;
+  document.getElementById('chip-preg').textContent='Pregunta '+(E.idx+1)+'/'+E.preguntas.length;
+  document.getElementById('chip-pts').textContent='Puntos: '+E.puntos;
+  document.getElementById('chip-racha').textContent='Racha: '+E.racha+' 🔥';
+  document.getElementById('letras-usadas').textContent='';
+  renderPalabra();renderTeclado();
+}
+
+function renderPalabra(){
+  const c=document.getElementById('palabra-display');c.innerHTML='';
+  E._respNorm.split('').forEach(ch=>{
+    const d=document.createElement('div');
+    d.className=ch===' '?'letra-box espacio':'letra-box';
+    if(ch!==' ')d.textContent=E.acertadasSet.has(ch)?ch:'';
+    c.appendChild(d);
+  });
+}
+
+function renderTeclado(){
+  const c=document.getElementById('teclado');c.innerHTML='';
+  ABEC.forEach(l=>{
+    const b=document.createElement('button');b.className='key';b.textContent=l;
+    b.onclick=()=>intentar(l,b);c.appendChild(b);
+  });
+}
+
+function intentar(l,btn){
+  if(btn.disabled)return;btn.disabled=true;
+  const unicas=[...new Set(E._respNorm.replace(/ /g,'').split(''))];
+  if(unicas.includes(l)){
+    btn.classList.add('correcta');E.acertadasSet.add(l);renderPalabra();
+    if(unicas.every(c=>E.acertadasSet.has(c)))setTimeout(()=>preguntaGanada(),250);
+  } else {
+    btn.classList.add('incorrecta');E.errores++;
+    document.getElementById(PARTES[E.errores-1]).setAttribute('opacity','1');
+    if(E.errores>=MAX_ERR)setTimeout(()=>preguntaPerdida(),250);
+  }
+  document.getElementById('letras-usadas').textContent='Letras usadas: '+[...document.querySelectorAll('.key:disabled')].map(b=>b.textContent).join(' ');
+}
+
+function preguntaGanada(){
+  E.puntos+=50+(MAX_ERR-E.errores)*10;E.racha++;E.acertadas++;
+  const msg=document.getElementById('estado-msg');msg.className='estado-msg gano';
+  msg.textContent='🎉 ¡Correcto! Era: '+E.preguntas[E.idx].display;
+  document.querySelectorAll('.key').forEach(b=>b.disabled=true);
+  document.getElementById('btn-sig').style.display='inline-block';
+}
+
+function preguntaPerdida(){
+  E.racha=0;
+  const msg=document.getElementById('estado-msg');msg.className='estado-msg perdio';
+  msg.textContent='😢 Era: '+E.preguntas[E.idx].display;
+  document.querySelectorAll('.key').forEach(b=>b.disabled=true);
+  document.getElementById('btn-sig').style.display='inline-block';
+}
+
+function siguientePregunta(){E.idx++;cargarPregunta();}
+
+function terminarJuego(porTiempo=false){
+  clearInterval(E.timerInt);
+  if(porTiempo){
+    const msg=document.getElementById('estado-msg');msg.className='estado-msg tiempo';
+    msg.textContent='⏰ ¡Se acabó el tiempo!';
+    document.querySelectorAll('.key').forEach(b=>b.disabled=true);
+    setTimeout(()=>mostrarResultado(),1500);
+  } else {mostrarResultado();}
+}
+
+async function mostrarResultado(){
+  const total=E.preguntas.length;
+  const nota=parseFloat(((E.acertadas/total)*5).toFixed(2));
+  const tiempoUsado=TIEMPO_MAX-E.tiempoRestante;
+  const ahora=new Date();
+  const reg={
+    nombre:E.nombre,grado:E.grado,
+    acertadas:E.acertadas,total,nota,puntos:E.puntos,
+    tiempoUsado,
+    fecha:ahora.toLocaleDateString('es-CO'),
+    hora:ahora.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'})
+  };
+  await guardarRegistro(reg);
+
+  document.getElementById('res-nombre-label').textContent=E.nombre+' · '+E.grado;
+  document.getElementById('res-nota').textContent=nota.toFixed(2);
+  document.getElementById('res-acertadas').textContent=E.acertadas;
+  document.getElementById('res-total').textContent=total;
+  document.getElementById('res-puntos').textContent=E.puntos;
+  const m=Math.floor(tiempoUsado/60),s=tiempoUsado%60;
+  document.getElementById('res-tiempo-r').textContent=m>0?m+'m '+s+'s':s+'s';
+  mostrarPantalla('pantalla-resultado');
+}
+
+// --- DOCENTE ---
+function mostrarDocente(){mostrarPantalla('pantalla-docente');document.getElementById('panel-datos').style.display='none';document.getElementById('pwd-area').style.display='flex';}
+
+function verificarPwd(){
+  const v=document.getElementById('inp-pwd').value;
+  if(v===PWD){
+    document.getElementById('pwd-area').style.display='none';
+    document.getElementById('panel-datos').style.display='flex';
+    cargarTabla();
+  } else {
+    document.getElementById('error-pwd').style.display='block';
+  }
+}
+
+async function cargarTabla(){
+  const bd=await cargarBD();
+  const tbody=document.getElementById('tabla-body');
+  const empty=document.getElementById('tabla-empty');
+  tbody.innerHTML='';
+  if(bd.length===0){empty.style.display='block';renderStats([]);return;}
+  empty.style.display='none';
+  bd.forEach((r,i)=>{
+    const nc=r.nota>=4?'nota-alta':r.nota>=3?'nota-media':'nota-baja';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${i+1}</td><td><strong>${r.nombre}</strong></td><td>${r.grado}</td><td>${r.acertadas}</td><td>${r.total}</td><td><span class="nota-badge ${nc}">${r.nota.toFixed(2)}</span></td><td>${Math.floor(r.tiempoUsado/60)>0?Math.floor(r.tiempoUsado/60)+'m ':''} ${r.tiempoUsado%60}s</td><td>${r.fecha} ${r.hora}</td>`;
+    tbody.appendChild(tr);
+  });
+  renderStats(bd);
+}
+
+function renderStats(bd){
+  const el=document.getElementById('resumen-stats');
+  if(bd.length===0){el.innerHTML='';return;}
+  const promNota=(bd.reduce((a,r)=>a+r.nota,0)/bd.length).toFixed(2);
+  const aprobados=bd.filter(r=>r.nota>=3).length;
+  el.innerHTML=`
+    <div class="res-item" style="flex:1;min-width:90px;"><div class="res-val" style="font-size:1.2rem;">${bd.length}</div><div class="res-lab">Estudiantes</div></div>
+    <div class="res-item" style="flex:1;min-width:90px;"><div class="res-val" style="font-size:1.2rem;">${promNota}</div><div class="res-lab">Promedio nota</div></div>
+    <div class="res-item" style="flex:1;min-width:90px;"><div class="res-val" style="font-size:1.2rem;color:#059669;">${aprobados}</div><div class="res-lab">Aprobados ≥3.0</div></div>
+    <div class="res-item" style="flex:1;min-width:90px;"><div class="res-val" style="font-size:1.2rem;color:#dc2626;">${bd.length-aprobados}</div><div class="res-lab">Por debajo de 3.0</div></div>`;
+}
+
+async function descargarExcel(){
+  const bd=await cargarBD();
+  if(bd.length===0){alert('No hay registros aún.');return;}
+  const wb=XLSX.utils.book_new();
+  const encabezado=[['N°','Nombre completo','Grado','Preguntas acertadas','Total preguntas','Nota (0-5)','Puntos','Tiempo usado','Fecha','Hora']];
+  const filas=bd.map((r,i)=>[i+1,r.nombre,r.grado,r.acertadas,r.total,r.nota,r.puntos,r.tiempoUsado+'s',r.fecha,r.hora]);
+  const promedio=['','','PROMEDIO','','',parseFloat((bd.reduce((a,r)=>a+r.nota,0)/bd.length).toFixed(2)),'','','',''];
+  const data=[...encabezado,...filas,[],promedio];
+  const ws=XLSX.utils.aoa_to_sheet(data);
+  ws['!cols']=[{wch:4},{wch:28},{wch:8},{wch:18},{wch:14},{wch:12},{wch:8},{wch:12},{wch:12},{wch:8}];
+  XLSX.utils.book_append_sheet(wb,ws,'Resultados');
+  const fecha=new Date().toLocaleDateString('es-CO').replace(/\//g,'-');
+  XLSX.writeFile(wb,'Notas_Ahorcado_Polinomios_'+fecha+'.xlsx');
+}
+
+async function borrarDatos(){
+  if(!confirm('¿Seguro que deseas borrar TODOS los registros? Esta acción no se puede deshacer.'))return;
+  await borrarBD();cargarTabla();
+}
+
+function mostrarPantalla(id){
+  ['pantalla-registro','pantalla-juego','pantalla-resultado','pantalla-docente'].forEach(p=>document.getElementById(p).style.display='none');
+  document.getElementById(id).style.display='block';
+}
+
+function reiniciar(){
+  document.getElementById('inp-nombre').value='';
+  document.getElementById('inp-grado').value='';
+  document.getElementById('inp-pwd').value='';
+  document.getElementById('error-pwd').style.display='none';
+  mostrarPantalla('pantalla-registro');
+}
+</script>
